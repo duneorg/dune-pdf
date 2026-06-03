@@ -1,0 +1,21 @@
+{
+  "name": "@dune/pdf-archive",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/mod.ts",
+    "./extract": "./src/extract.ts",
+    "./handler": "./src/handler.ts"
+  },
+  "imports": {
+    "@std/path": "jsr:@std/path@^1",
+    "unpdf": "npm:unpdf@^0.12"
+  },
+  "tasks": {
+    "test": "deno test --allow-read tests/",
+    "check": "deno fmt --check && deno lint && deno check src/**/*.ts tests/**/*.ts"
+  },
+  "lint": {
+    "rules": { "tags": ["recommended"] }
+  }
+}
