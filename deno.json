@@ -1,15 +1,20 @@
 {
-  "name": "@dune/pdf-archive",
-  "version": "0.1.0",
+  "name": "@dune/pdf",
+  "version": "0.2.0",
   "license": "MIT",
   "exports": {
     ".": "./src/mod.ts",
     "./extract": "./src/extract.ts",
-    "./handler": "./src/handler.ts"
+    "./handler": "./src/handler.ts",
+    "./viewer": "./src/viewer.tsx"
   },
   "imports": {
     "@std/path": "jsr:@std/path@^1",
-    "unpdf": "npm:unpdf@^0.12"
+    "unpdf": "npm:unpdf@^0.12",
+    "preact": "npm:preact@^10",
+    "preact/hooks": "npm:preact@^10/hooks",
+    "preact/jsx-runtime": "npm:preact@^10/jsx-runtime",
+    "preact/jsx-dev-runtime": "npm:preact@^10/jsx-dev-runtime"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",

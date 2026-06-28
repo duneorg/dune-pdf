@@ -54,3 +54,5 @@ export { extractPdfText } from "./extract.ts";
 export type { PdfTextResult } from "./extract.ts";
 export { createPdfHandler } from "./handler.ts";
 export type { PdfHandlerOptions } from "./handler.ts";
+export { default as PDFViewer } from "./viewer.tsx";
+export type { PDFViewerProps, PDFViewerLabels } from "./viewer.tsx";

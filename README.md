@@ -1,22 +1,24 @@
-# @dune/pdf-archive
+# @dune/pdf
 
-PDF serving and text extraction for [Dune CMS](https://getdune.com) sites.
+PDF serving, text extraction, and in-browser viewing for [Dune CMS](https://getdune.com) sites.
 
-- **`createPdfHandler`** — a secure Fresh-compatible route handler that serves PDF files from a directory
+- **`createPdfHandler`** — secure Fresh-compatible route handler that serves PDF files from a directory
 - **`extractPdfText`** — plain text extraction from PDFs for search indexing and AI pipelines
+- **`PDFViewer`** — Preact island for rendering PDFs in the browser (canvas-based, powered by PDF.js)
 
 ## Installation
 
 Requires Deno and `@dune/core`.
 
-Add the import to your site's `deno.json`:
+Add to your site's `deno.json`:
 
 ```json
 {
   "imports": {
-    "@dune/pdf-archive": "jsr:@dune/pdf-archive",
-    "@dune/pdf-archive/handler": "jsr:@dune/pdf-archive/handler",
-    "@dune/pdf-archive/extract": "jsr:@dune/pdf-archive/extract"
+    "@dune/pdf": "jsr:@dune/pdf",
+    "@dune/pdf/handler": "jsr:@dune/pdf/handler",
+    "@dune/pdf/extract": "jsr:@dune/pdf/extract",
+    "@dune/pdf/viewer": "jsr:@dune/pdf/viewer"
   }
 }
 ```
@@ -26,7 +28,7 @@ Add the import to your site's `deno.json`:
 Create a route file at `routes/pdf/[filename].ts`:
 
 ```ts
-import { createPdfHandler } from "@dune/pdf-archive/handler";
+import { createPdfHandler } from "@dune/pdf/handler";
 import { join } from "@std/path";
 
 export const handler = {
@@ -45,15 +47,15 @@ The handler:
 
 ```ts
 createPdfHandler({
-  dir: "/absolute/path/to/pdfs",   // required
-  cacheControl: "public, max-age=3600",  // optional, default: "public, max-age=86400"
+  dir: "/absolute/path/to/pdfs",          // required
+  cacheControl: "public, max-age=3600",   // optional, default: "public, max-age=86400"
 })
 ```
 
 ## Extracting text
 
 ```ts
-import { extractPdfText } from "@dune/pdf-archive/extract";
+import { extractPdfText } from "@dune/pdf/extract";
 
 const result = await extractPdfText("/path/to/document.pdf");
 
@@ -66,10 +68,10 @@ Uses [unpdf](https://github.com/unjs/unpdf) (PDF.js) for extraction. Returns con
 
 ### Search indexing
 
-To feed PDF text into Dune's search index, run extraction in a build script and write the result as a content file, or integrate via a plugin hook:
+To feed PDF text into Dune's search index, run extraction in a build script and write the result as a content file:
 
 ```ts
-import { extractPdfText } from "@dune/pdf-archive/extract";
+import { extractPdfText } from "@dune/pdf/extract";
 
 const { text } = await extractPdfText("static/pdfs/issue-42.pdf");
 
@@ -81,6 +83,77 @@ template: issue
 ${text}
 `);
 ```
+
+## PDF viewer
+
+`PDFViewer` is a Preact island that renders a PDF in the browser using PDF.js. It handles page navigation, keyboard shortcuts, touch swipe, responsive resizing, print, and download.
+
+### Setup
+
+The viewer reads PDF.js from a global (`window.pdfjsLib`). Download the PDF.js legacy build from [github.com/mozilla/pdf.js/releases](https://github.com/mozilla/pdf.js/releases) and place `pdf.min.js` and `pdf.worker.min.js` in your site's `static/` directory.
+
+Add the script to your template:
+
+```tsx
+<script src="/static/pdf.min.js" />
+```
+
+### Usage
+
+Import `PDFViewer` from `@dune/pdf/viewer` in your theme template:
+
+```tsx
+/** @jsxImportSource preact */
+import PDFViewer from "@dune/pdf/viewer";
+
+export default function IssueTemplate({ page, site, nav, Layout }: any) {
+  const fm = page?.frontmatter ?? {};
+  return (
+    <Layout site={site} page={page} nav={nav}>
+      <article>
+        <PDFViewer
+          pdfUrl={fm.pdf}
+          workerSrc="/static/pdf.worker.min.js"
+        />
+        <script src="/static/pdf.min.js" />
+      </article>
+    </Layout>
+  );
+}
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `pdfUrl` | `string` | — | URL of the PDF to display |
+| `workerSrc` | `string` | `"/static/pdf.worker.min.js"` | URL of the PDF.js worker script |
+| `labels` | `PDFViewerLabels` | English defaults | Override UI strings for localisation |
+
+### Localisation
+
+```tsx
+<PDFViewer
+  pdfUrl={fm.pdf}
+  labels={{
+    firstPage: "Erste Seite",
+    prevPage: "Vorherige Seite",
+    nextPage: "Nächste Seite",
+    lastPage: "Letzte Seite",
+    print: "Drucken",
+    download: "Herunterladen",
+  }}
+/>
+```
+
+### Keyboard shortcuts
+
+| Key | Action |
+|-----|--------|
+| `←` | Previous page |
+| `→` | Next page |
+| `Home` | First page |
+| `End` | Last page |
 
 ## License
 
