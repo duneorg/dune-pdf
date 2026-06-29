@@ -27,11 +27,17 @@ import { useEffect, useRef, useState } from "preact/hooks";
 
 /** Labels for all UI strings — override to localise. */
 export interface PDFViewerLabels {
+  /** Label for the "go to first page" button. @default "First page" */
   firstPage?: string;
+  /** Label for the "previous page" button. @default "Previous page" */
   prevPage?: string;
+  /** Label for the "next page" button. @default "Next page" */
   nextPage?: string;
+  /** Label for the "go to last page" button. @default "Last page" */
   lastPage?: string;
+  /** Label for the print button. @default "Print" */
   print?: string;
+  /** Label for the download link. @default "Download" */
   download?: string;
 }
 
