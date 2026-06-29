@@ -39,7 +39,9 @@ export interface PdfHandlerOptions {
  * Security: rejects filenames containing `..` or `/`, and only serves `.pdf`
  * files. All other requests receive a 400 or 404 response.
  */
-export function createPdfHandler(options: PdfHandlerOptions) {
+export function createPdfHandler(
+  options: PdfHandlerOptions,
+): (_req: Request, ctx: { params: { filename: string } }) => Promise<Response> {
   const { dir, cacheControl = "public, max-age=86400" } = options;
 
   return async function handler(

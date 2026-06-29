@@ -22,6 +22,7 @@
  */
 
 /** @jsxImportSource preact */
+import type { JSX } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 /** Labels for all UI strings — override to localise. */
@@ -90,7 +91,7 @@ function ChevronBarRight() {
 export default function PDFViewer(
   { pdfUrl, workerSrc = "/static/pdf.worker.min.js", labels = {} }:
     PDFViewerProps,
-) {
+): JSX.Element {
   const l = { ...DEFAULT_LABELS, ...labels };
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
