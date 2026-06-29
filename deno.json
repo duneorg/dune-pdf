@@ -1,6 +1,7 @@
 {
   "name": "@dune/plugin-pdf",
   "version": "0.3.0",
+  "description": "PDF serving, text extraction, and viewer component for Dune CMS sites — dune-plugin",
   "license": "MIT",
   "exports": {
     ".": "./src/mod.ts",
