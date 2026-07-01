@@ -67,15 +67,17 @@ interface InjectedSearchRecord {
   template?: string;
 }
 
+/** Minimal Fresh handler context — just the fields this plugin accesses. */
+interface FreshCtx { req: Request; params?: Record<string, string> }
+
 /** Minimal structural view of the parts of the Dune plugin API used here. */
 interface DunePluginLike {
   name: string;
   version: string;
   description?: string;
   hooks: Record<string, (ctx: unknown) => unknown | Promise<unknown>>;
-  // deno-lint-ignore no-explicit-any
   publicRoutes?: Array<
-    { method?: string; path: string; handler: (fc: any) => unknown }
+    { method?: string; path: string; handler: (fc: FreshCtx) => unknown }
   >;
   clientEntries?: Record<string, string>;
 }
@@ -132,8 +134,7 @@ function pdfPlugin(config: PdfPluginConfig = {}): DunePluginLike {
         method: "GET",
         path: `${routeBase}/:filename`,
         // Bridge Fresh's single-arg context to createPdfHandler's (req, ctx) shape.
-        // deno-lint-ignore no-explicit-any
-        handler: (fc: any) =>
+        handler: (fc: FreshCtx) =>
           serve(fc.req, { params: { filename: fc.params?.filename ?? "" } }),
       },
     ],
