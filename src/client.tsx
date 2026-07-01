@@ -29,7 +29,9 @@ function mountAll(): void {
     if (el.dataset.pdfMounted === "true") continue;
     const pdfUrl = el.dataset.pdfUrl;
     if (!pdfUrl) {
-      console.warn("[dune/plugin-pdf] [data-pdf-viewer] element missing data-pdf-url");
+      console.warn(
+        "[dune/plugin-pdf] [data-pdf-viewer] element missing data-pdf-url",
+      );
       continue;
     }
     el.dataset.pdfMounted = "true";
